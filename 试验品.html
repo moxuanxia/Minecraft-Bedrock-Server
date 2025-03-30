@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<!-- 
+  文档类型声明，告诉浏览器这是一个HTML5文档
+  语言设置为简体中文(zh-CN)
+-->
+<html lang="zh-CN">
+<head>
+    <!-- 网页元信息部分 -->
+    <meta charset="UTF-8"> <!-- 字符编码设置为UTF-8，支持中文 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 响应式设计，适配移动设备 -->
+    <title>云曦阁 | Minecraft 服务器</title> <!-- 网页标题 -->
+    
+    <!-- 引入外部资源 -->
+    <!-- Google Fonts - Noto Sans SC字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- 引入本地篆体字体文件 -->
+    <style>
+        /* 
+          定义篆体字体 
+          使用同目录下的WenDaoShuiYunZhuan-2.ttf文件
+          font-display: swap 确保文字在字体加载完成前也能显示
+        */
+        @font-face {
+            font-family: 'Yunzhuan';
+            src: url('WenDaoShuiYunZhuan-2.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        
+        /* 
+          CSS变量定义，便于统一管理和修改样式
+          使用var(--variable-name)引用这些变量
+        */
+        :root {
+            --primary: #5cb85c; /* 主色调 - 绿色 */
+            --primary-dark: #449d44; /* 深绿色 */
+            --secondary: #8bc34a; /* 辅助色 */
+            --cloud-blue: #4d9de0; /* 云曦蓝 */
+            --cloud-dark: #3a7bb8; /* 深云曦蓝 */
+            --background: #f8f9fa; /* 背景色 */
+            --card: #ffffff; /* 卡片背景色 */
+            --text: #2d2d2d; /* 主要文字颜色 */
+            --text-secondary: #6c757d; /* 次要文字颜色 */
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* 过渡动画效果 */
+            --nav-height: 70px; /* 导航栏高度 */
+            --mobile-breakpoint: 768px; /* 移动端断点，小于这个宽度应用移动端样式 */
+        }
+        
+        /* 全局样式重置 */
+        * {
+            box-sizing: border-box; /* 盒模型设置为border-box，便于计算尺寸 */
+            margin: 0; /* 清除默认外边距 */
+            padding: 0; /* 清除默认内边距 */
+        }
+        
+        /* 主体样式 */
+        body {
+            font-family: 'Noto Sans SC', sans-serif; /* 默认字体 */
+            background-color: var(--background); /* 使用CSS变量设置背景色 */
+            color: var(--text); /* 文字颜色 */
+            line-height: 1.6; /* 行高 */
+            overflow-x: hidden; /* 隐藏水平滚动条 */
+            position: relative; /* 相对定位 */
+            min-height: 100vh; /* 最小高度为视口高度 */
+            padding-top: var(--nav-height); /* 顶部内边距，为导航栏留出空间 */
+            
+            /* 背景渐变效果 */
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(77, 157, 224, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(92, 184, 92, 0.05) 0%, transparent 20%);
+        }
+        
+        /* 导航栏样式 - 电脑端 */
+        .navbar {
+            position: fixed; /* 固定定位 */
+            top: 0; /* 顶部对齐 */
+            left: 0; /* 左侧对齐 */
+            right: 0; /* 右侧对齐 */
+            height: var(--nav-height); /* 高度使用变量 */
+            background: rgba(44, 62, 80, 0.9); /* 半透明背景 */
+            backdrop-filter: blur(10px); /* 背景模糊效果 */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2); /* 阴影 */
+            z-index: 1000; /* 确保导航栏在最上层 */
+            display: flex; /* 弹性布局 */
+            justify-content: space-between; /* 内容两端对齐 */
+            align-items: center; /* 垂直居中 */
+            padding: 0 2rem; /* 内边距 */
+            transition: var(--transition); /* 过渡效果 */
+        }
+        
+        /* 导航栏logo样式 */
+        .navbar-logo {
+            font-family: 'Yunzhuan', serif; /* 使用篆体字体 */
+            color: white; /* 白色文字 */
+            font-size: 1.8rem; /* 字体大小 */
+            text-decoration: none; /* 去除下划线 */
+            display: flex; /* 弹性布局 */
+            align-items: center; /* 垂直居中 */
+            letter-spacing: 2px; /* 字间距 */
+        }
+        
+        /* 导航栏logo图片样式 */
+        .navbar-logo img {
+            height: 40px; /* 高度 */
+            width: auto; /* 保持原始宽高比 */
+            max-height: 40px; /* 最大高度 */
+            margin-right: 10px; /* 右侧外边距 */
+        }
+        
+        /* 导航链接列表样式 */
+        .navbar-links {
+            display: flex; /* 弹性布局 */
+            list-style: none; /* 去除列表样式 */
+        }
+        
+        /* 导航链接项样式 */
+        .navbar-links li {
+            margin-left: 1.5rem; /* 左侧外边距 */
+        }
+        
+        /* 导航链接样式 */
+        .navbar-links a {
+            color: white; /* 白色文字 */
+            text-decoration: none; /* 去除下划线 */
+            font-weight: 500; /* 字体粗细 */
+            padding: 0.5rem 1rem; /* 内边距 */
+            border-radius: 4px; /* 圆角 */
+            transition: var(--transition); /* 过渡效果 */
+            position: relative; /* 相对定位 */
+        }
+        
+        /* 导航链接悬停效果 */
+        .navbar-links a:hover {
+            background-color: rgba(255,255,255,0.1); /* 半透明背景 */
+        }
+        
+        /* 导航链接下划线动画 */
+        .navbar-links a::after {
+            content: ''; /* 伪元素内容 */
+            position: absolute; /* 绝对定位 */
+            bottom: 0; /* 底部对齐 */
+            left: 50%; /* 左侧50% */
+            width: 0; /* 初始宽度为0 */
+            height: 2px; /* 高度 */
+            background-color: var(--cloud-blue); /* 背景色 */
+            transition: var(--transition); /* 过渡效果 */
+            transform: translateX(-50%); /* 水平居中 */
+        }
+        
+        /* 导航链接悬停时下划线动画 */
+        .navbar-links a:hover::after {
+            width: 100%; /* 宽度变为100% */
+        }
+        
+        /* 移动端菜单按钮 - 默认隐藏 */
+        .mobile-menu-btn {
+            display: none; /* 默认不显示 */
+            background: none; /* 无背景 */
+            border: none; /* 无边框 */
+            color: white; /* 白色文字 */
+            font-size: 8.5rem; /* 字体大小 */
+            cursor: pointer; /* 鼠标指针样式 */
+            padding: 0.5rem; /* 内边距 */
+        }
+        
+        /* 移动端导航菜单 - 默认隐藏 */
+        .mobile-nav {
+            position: fixed; /* 固定定位 */
+            top: var(--nav-height); /* 顶部位置 */
+            left: 0; /* 左侧对齐 */
+            right: 0; /* 右侧对齐 */
+            background: rgba(34, 49, 63, 0.98); /* 半透明背景 */
+            backdrop-filter: blur(10px); /* 背景模糊 */
+            z-index: 999; /* 层级 */
+            padding: 1rem 0; /* 内边距 */
+            transform: translateY(-100%); /* 初始位置在屏幕外 */
+            opacity: 0; /* 初始透明度为0 */
+            transition: var(--transition); /* 过渡效果 */
+            pointer-events: none; /* 禁止鼠标事件 */
+        }
+        
+        /* 移动端菜单激活状态 */
+        .mobile-nav.active {
+            transform: translateY(0); /* 显示在正常位置 */
+            opacity: 1; /* 完全不透明 */
+            pointer-events: all; /* 允许鼠标事件 */
+        }
+        
+        /* 移动端导航链接列表 */
+        .mobile-nav-links {
+            list-style: none; /* 去除列表样式 */
+        }
+        
+        /* 移动端导航链接项 */
+        .mobile-nav-links li {
+            margin: 0.5rem 0; /* 上下外边距 */
+        }
+        
+        /* 移动端导航链接 */
+        .mobile-nav-links a {
+            display: block; /* 块级元素 */
+            color: white; /* 白色文字 */
+            text-decoration: none; /* 去除下划线 */
+            padding: 0.8rem 2rem; /* 内边距 */
+            transition: var(--transition); /* 过渡效果 */
+        }
+        
+        /* 移动端导航链接悬停效果 */
+        .mobile-nav-links a:hover {
+            background-color: rgba(255,255,255,0.1); /* 半透明背景 */
+            padding-left: 2.5rem; /* 左侧内边距增加，产生动画效果 */
+        }
+        
+        /* 粒子效果样式 */
+        .particle {
+            position: fixed; /* 固定定位 */
+            width: 16px; /* 宽度 */
+            height: 16px; /* 高度 */
+            background-size: contain; /* 背景图尺寸 */
+            background-repeat: no-repeat; /* 不重复背景 */
+            z-index: -1; /* 置于底层 */
+            opacity: 0.7; /* 透明度 */
+            pointer-events: none; /* 禁止鼠标事件 */
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); /* 阴影效果 */
+            animation: float 15s ease-in-out infinite; /* 浮动动画 */
+        }
+        
+        /* 篆体风格字体类 */
+        .yunzhuan-font {
+            font-family: 'Yunzhuan', serif; /* 使用篆体 */
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.2); /* 文字阴影 */
+            letter-spacing: 2px; /* 字间距 */
+        }
+        
+        /* 头部区域样式 */
+        header {
+            background: linear-gradient(135deg, var(--cloud-blue), var(--cloud-dark)); /* 渐变背景 */
+            color: white; /* 白色文字 */
+            padding: 5rem 0 6rem; /* 内边距 */
+            text-align: center; /* 文字居中 */
+            position: relative; /* 相对定位 */
+            overflow: hidden; /* 隐藏溢出内容 */
+            box-shadow: var(--shadow); /* 阴影效果 */
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%); /* 多边形裁剪 */
+            margin-top: calc(-1 * var(--nav-height)); /* 负外边距，抵消导航栏高度 */
+        }
+        
+        /* 头部背景网格效果 */
+        header::before {
+            content: ''; /* 伪元素内容 */
+            position: absolute; /* 绝对定位 */
+            top: 0; /* 顶部对齐 */
+            left: 0; /* 左侧对齐 */
+            right: 0; /* 右侧对齐 */
+            bottom: 0; /* 底部对齐 */
+            /* 网格背景 */
+            background: 
+                linear-gradient(45deg, transparent 65%, rgba(255,255,255,0.1) 65%),
+                linear-gradient(-45deg, transparent 65%, rgba(255,255,255,0.1) 65%);
+            background-size: 20px 20px; /* 背景图尺寸 */
+            opacity: 0.3; /* 透明度 */
+        }
+        
+        /* 主容器样式 */
+        .container {
+            max-width: 1200px; /* 最大宽度 */
+            margin: 0 auto; /* 水平居中 */
+            padding: 0 2rem; /* 内边距 */
+            position: relative; /* 相对定位 */
+        }
+        
+        /* 一级标题样式 */
+        h1 {
+            font-size: 3rem; /* 字体大小 */
+            margin-bottom: 1rem; /* 底部外边距 */
+            transform: translateY(20px); /* 初始位置下移 */
+            opacity: 0; /* 初始透明度为0 */
+            animation: fadeInUp 0.8s 0.2s forwards; /* 淡入向上动画 */
+        }
+        
+        /* 二级标题样式 */
+        h2 {
+            font-size: 2rem; /* 字体大小 */
+            margin: 2rem 0 1.5rem; /* 外边距 */
+            position: relative; /* 相对定位 */
+            display: inline-block; /* 行内块元素 */
+            padding-bottom: 0.5rem; /* 底部内边距 */
+        }
+        
+        /* 二级标题下划线动画 */
+        h2::after {
+            content: ''; /* 伪元素内容 */
+            position: absolute; /* 绝对定位 */
+            bottom: 0; /* 底部对齐 */
+            left: 0; /* 左侧对齐 */
+            width: 100%; /* 宽度100% */
+            height: 3px; /* 高度 */
+            background: linear-gradient(90deg, var(--cloud-blue), var(--primary)); /* 渐变背景 */
+            transform: scaleX(0); /* 初始宽度为0 */
+            transform-origin: left; /* 变换原点在左侧 */
+            transition: var(--transition); /* 过渡效果 */
+        }
+        
+        /* 二级标题悬停时下划线动画 */
+        h2:hover::after {
+            transform: scaleX(1); /* 宽度变为100% */
+        }
+        
+        /* 三级标题样式 */
+        h3 {
+            font-size: 1.5rem; /* 字体大小 */
+            margin: 1.5rem 0 1rem; /* 外边距 */
+            color: var(--cloud-dark); /* 文字颜色 */
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background: var(--card); /* 背景色 */
+            border-radius: 12px; /* 圆角 */
+            padding: 2rem; /* 内边距 */
+            margin: 2rem 0; /* 外边距 */
+            box-shadow: var(--shadow); /* 阴影 */
+            transition: var(--transition); /* 过渡效果 */
+            position: relative; /* 相对定位 */
+            overflow: hidden; /* 隐藏溢出内容 */
+            transform: translateY(20px); /* 初始位置下移 */
+            opacity: 0; /* 初始透明度为0 */
+            animation: fadeInUp 0.8s forwards; /* 淡入向上动画 */
+        }
+        
+        /* 卡片动画延迟设置 */
+        .card:nth-child(1) { animation-delay: 0.4s; } /* 第一个卡片延迟0.4秒 */
+        .card:nth-child(2) { animation-delay: 0.6s; } /* 第二个卡片延迟0.6秒 */
+        .card:nth-child(3) { animation-delay: 0.8s; } /* 第三个卡片延迟0.8秒 */
+        
+        /* 卡片悬停效果 */
+        .card:hover {
+            transform: translateY(-5px); /* 上移5像素 */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); /* 阴影效果增强 */
+        }
+        
+        /* 卡片左侧装饰条 */
+        .card::before {
+            content: ''; /* 伪元素内容 */
+            position: absolute; /* 绝对定位 */
+            top: 0; /* 顶部对齐 */
+            left: 0; /* 左侧对齐 */
+            width: 5px; /* 宽度 */
+            height: 100%; /* 高度100% */
+            background: linear-gradient(to bottom, var(--cloud-blue), var(--primary)); /* 渐变背景 */
+            transition: var(--transition); /* 过渡效果 */
+        }
+        
+        /* 卡片悬停时左侧装饰条变宽 */
+        .card:hover::before {
+            width: 8px; /* 宽度增加 */
+        }
+        
+        /* 公告栏样式 */
+        .announcement {
+            background: linear-gradient(135deg, #fff8e1, #fff3e0); /* 渐变背景 */
+            border-left: 4px solid #FFA000; /* 左侧边框 */
+            padding: 1.5rem; /* 内边距 */
+            margin: 1.5rem 0; /* 外边距 */
+            border-radius: 8px; /* 圆角 */
+            box-shadow: var(--shadow); /* 阴影 */
+        }
+        
+        /* 公告栏标题样式 */
+        .announcement h3 {
+            color: #FF6F00; /* 文字颜色 */
+            margin-top: 0; /* 顶部外边距为0 */
+            display: flex; /* 弹性布局 */
+            align-items: center; /* 垂直居中 */
+        }
+        
+        /* 公告栏图标样式 */
+        .announcement h3 i {
+            margin-right: 10px; /* 右侧外边距 */
+        }
+        
+        /* 公告日期样式 */
+        .announcement-date {
+            color: var(--text-secondary); /* 文字颜色 */
+            font-size: 0.9rem; /* 字体大小 */
+            margin-bottom: 1rem; /* 底部外边距 */
+            display: block; /* 块级元素 */
+        }
+        
+        /* 图片展示区样式 */
+        .gallery {
+            display: grid; /* 网格布局 */
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* 自适应列 */
+            gap: 1.5rem; /* 间距 */
+            margin: 2rem 0; /* 外边距 */
+        }
+        
+        /* 图片项样式 */
+        .gallery-item {
+            position: relative; /* 相对定位 */
+            border-radius: 8px; /* 圆角 */
+            overflow: hidden; /* 隐藏溢出内容 */
+            box-shadow: var(--shadow); /* 阴影 */
+            transition: var(--transition); /* 过渡效果 */
+            aspect-ratio: 16/9; /* 宽高比 */
+        }
+        
+        /* 图片项悬停效果 */
+        .gallery-item:hover {
+            transform: translateY(-5px); /* 上移5像素 */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15); /* 阴影效果增强 */
+        }
+        
+        /* 图片样式 */
+        .gallery-item img {
+            width: 100%; /* 宽度100% */
+            height: 100%; /* 高度100% */
+            object-fit: cover; /* 图片填充方式 */
+            transition: var(--transition); /* 过渡效果 */
+        }
+        
+        /* 图片悬停时放大 */
+        .gallery-item:hover img {
+            transform: scale(1.05); /* 放大5% */
+        }
+        
+        /* 图片标题样式 */
+        .gallery-caption {
+            position: absolute; /* 绝对定位 */
+            bottom: 0; /* 底部对齐 */
+            left: 0; /* 左侧对齐 */
+            right: 0; /* 右侧对齐 */
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); /* 渐变背景 */
+            color: white; /* 白色文字 */
+            padding: 1rem; /* 内边距 */
+            transform: translateY(100%); /* 初始位置在下方 */
+            transition: var(--transition); /* 过渡效果 */
+        }
+        
+        /* 图片悬停时标题显示 */
+        .gallery-item:hover .gallery-caption {
+            transform: translateY(0); /* 移动到正常位置 */
+        }
+
+        /* 视频展示区样式 */
+        .video-gallery {
+            display: grid; /* 网格布局 */
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); /* 自适应列 */
+            gap: 2rem; /* 间距 */
+            margin: 2rem 0; /* 外边距 */
+        }
+
+        /* 视频容器样式 */
+        .video-container {
+            position: relative; /* 相对定位 */
+            border-radius: 12px; /* 圆角 */
+            overflow: hidden; /* 隐藏溢出内容 */
+            box-shadow: var(--shadow); /* 阴影 */
+            transition: var(--transition); /* 过渡效果 */
+            aspect-ratio: 16/9; /* 宽高比 */
+            background: #000; /* 黑色背景 */
+        }
+
+        /* 视频iframe样式 */
+        .video-container iframe {
+            width: 100%; /* 宽度100% */
+            height: 100%; /* 高度100% */
+            border: none; /* 无边框 */
+            display: block; /* 块级元素 */
+        }
+
+        /* 视频标题样式 */
+        .video-caption {
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); /* 渐变背景 */
+            color: white; /* 白色文字 */
+            padding: 1rem; /* 内边距 */
+            position: absolute; /* 绝对定位 */
+            bottom: 0; /* 底部对齐 */
+            left: 0; /* 左侧对齐 */
+            right: 0; /* 右侧对齐 */
+            text-align: center; /* 文字居中 */
+            transition: var(--transition); /* 过渡效果 */
+            opacity: 0.9; /* 透明度 */
+        }
+
+        /* 视频容器悬停效果 */
+        .video-container:hover {
+            transform: translateY(-5px); /* 上移5像素 */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); /* 阴影效果增强 */
+        }
+
+        /* 视频容器悬停时标题效果 */
+        .video-container:hover .video-caption {
+            opacity: 1; /* 完全不透明 */
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); /* 渐变背景增强 */
+        }
+        
+        /* 下载区域样式 */
+        .download-grid {
+            display: grid; /* 网格布局 */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* 自适应列 */
+            gap: 2rem; /* 间距 */
+            margin: 2rem 0; /* 外边距 */
+        }
+        
+        /* 下载卡片样式 */
+        .download-card {
+            background: var(--card); /* 背景色 */
+            border-radius: 12px; /* 圆角 */
+            padding: 1.5rem; /* 内边距 */
+            box-shadow: var(--shadow); /* 阴影 */
+            transition: var(--transition); /* 过渡效果 */
+            position: relative; /* 相对定位 */
+            overflow: hidden; /* 隐藏溢出内容 */
+            border: 1px solid rgba(0,0,0,0.05); /* 边框 */
+        }
+        
+        /* 下载卡片悬停效果 */
+        .download-card:hover {
+            transform: translateY(-5px); /* 上移5像素 */
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1); /* 阴影效果增强 */
+            border-color: var(--cloud-blue); /* 边框颜色变化 */
+        }
+        
+        /* 下载卡片顶部装饰条 */
+        .download-card::after {
+            content: ''; /* 伪元素内容 */
+            position: absolute; /* 绝对定位 */
+            top: 0; /* 顶部对齐 */
+            left: 0; /* 左侧对齐 */
+            right: 0; /* 右侧对齐 */
+            height: 4px; /* 高度 */
+            background: linear-gradient(90deg, var(--cloud-blue), var(--primary)); /* 渐变背景 */
+            opacity: 0.8; /* 透明度 */
+        }
+        
+        /* 按钮基础样式 */
+        .btn {
+            display: inline-flex; /* 行内弹性布局 */
+            align-items: center; /* 垂直居中 */
+            justify-content: center; /* 水平居中 */
+            background-color: var(--cloud-blue); /* 背景色 */
+            color: white; /* 白色文字 */
+            padding: 0.8rem 1.8rem; /* 内边距 */
+            border-radius: 50px; /* 圆形边框 */
+            text-decoration: none; /* 去除下划线 */
+            font-weight: 500; /* 字体粗细 */
+            margin: 1rem 0; /* 外边距 */
+            transition: var(--transition); /* 过渡效果 */
+            position: relative; /* 相对定位 */
+            overflow: hidden; /* 隐藏溢出内容 */
+            border: none; /* 无边框 */
+            cursor: pointer; /* 鼠标指针样式 */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* 阴影 */
+            text-transform: uppercase; /* 大写字母 */
+            font-size: 0.9rem; /* 字体大小 */
+            letter-spacing: 1px; /* 字间距 */
+        }
+        
+        /* 按钮图标样式 */
+        .btn i {
+            margin-right: 8px; /* 右侧外边距 */
+        }
+        
+        /* 按钮悬停效果 */
+        .btn:hover {
+            transform: translateY(-3px); /* 上移3像素 */
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2); /* 阴影效果增强 */
+        }
+        
+        /* 按钮点击效果 */
+        .btn:active {
+            transform: translateY(0); /* 回到原位 */
+        }
+        
+        /* 绿色按钮样式 */
+        .btn-green {
+            background-color: var(--primary); /* 背景色 */
+        }
+        
+        /* 绿色按钮悬停效果 */
+        .btn-green:hover {
+            background-color: var(--primary-dark); /* 背景色变深 */
+        }
+        
+        /* 警告框样式 */
+        .alert {
+            background-color: rgba(255, 243, 224, 0.7); /* 半透明背景 */
+            border-left: 4px solid #FFA000; /* 左侧边框 */
+            padding: 1.2rem; /* 内边距 */
+            margin: 1.5rem 0; /* 外边距 */
+            border-radius: 0 8px 8px 0; /* 圆角 */
+            transition: var(--transition); /* 过渡效果 */
+            backdrop-filter: blur(5px); /* 背景模糊 */
+        }
+        
+        /* 警告框悬停效果 */
+        .alert:hover {
+            transform: translateX(5px); /* 右移5像素 */
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1); /* 阴影效果 */
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background: linear-gradient(135deg, #2a2a2a, #1a1a1a); /* 渐变背景 */
+            color: white; /* 白色文字 */
+            text-align: center; /* 文字居中 */
+            padding: 3rem 0; /* 内边距 */
+            margin-top: 4rem; /* 顶部外边距 */
+            position: relative; /* 相对定位 */
+            clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 100%); /* 多边形裁剪 */
+        }
+        
+        /* 页脚顶部装饰条 */
+        footer::before {
+            content: ''; /* 伪元素内容 */
+            position: absolute; /* 绝对定位 */
+            top: 0; /* 顶部对齐 */
+            left: 0; /* 左侧对齐 */
+            right: 0; /* 右侧对齐 */
+            height: 3px; /* 高度 */
+            background: linear-gradient(90deg, var(--cloud-blue), var(--primary)); /* 渐变背景 */
+        }
+        
+        /* 页脚链接区域 */
+        .footer-links {
+            display: flex; /* 弹性布局 */
+            justify-content: center; /* 水平居中 */
+            flex-wrap: wrap; /* 允许换行 */
+            list-style: none; /* 去除列表样式 */
+            margin: 1.5rem 0; /* 外边距 */
+        }
+        
+        /* 页脚链接项 */
+        .footer-links li {
+            margin: 0 1rem; /* 左右外边距 */
+        }
+        
+        /* 页脚链接 */
+        .footer-links a {
+            color: white; /* 白色文字 */
+            text-decoration: none; /* 去除下划线 */
+            transition: var(--transition); /* 过渡效果 */
+        }
+        
+        /* 页脚链接悬停效果 */
+        .footer-links a:hover {
+            color: var(--cloud-blue); /* 文字颜色变化 */
+        }
+        
+        /* 社交媒体链接区域 */
+        .social-links {
+            display: flex; /* 弹性布局 */
+            justify-content: center; /* 水平居中 */
+            margin: 1.5rem 0; /* 外边距 */
+        }
+        
+        /* 社交媒体链接 */
+        .social-links a {
+            color: white; /* 白色文字 */
+            font-size: 1.5rem; /* 字体大小 */
+            margin: 0 1rem; /* 左右外边距 */
+            transition: var(--transition); /* 过渡效果 */
+        }
+        
+        /* 社交媒体链接悬停效果 */
+        .social-links a:hover {
+            color: var(--cloud-blue); /* 文字颜色变化 */
+            transform: translateY(-3px); /* 上移3像素 */
+        }
+        
+        /* 浮动动画 */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); } /* 开始和结束状态 */
+            50% { transform: translateY(-20px) rotate(5deg); } /* 中间状态 */
+        }
+        
+        /* 淡入向上动画 */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); } /* 起始状态 */
+            to { opacity: 1; transform: translateY(0); } /* 结束状态 */
+        }
+        
+        /* 脉冲动画 */
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(77, 157, 224, 0.7); } /* 起始状态 */
+            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(77, 157, 224, 0); } /* 中间状态 */
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(77, 157, 224, 0); } /* 结束状态 */
+        }
+        
+        /* 响应式设计 - 平板和手机 (992px及以下) */
+        @media (max-width: 992px) {
+            .container {
+                padding: 0 1.5rem; /* 调整内边距 */
+            }
+            
+            header {
+                padding: 4rem 0 5rem; /* 调整内边距 */
+            }
+            
+            h1 {
+                font-size: 2.5rem; /* 调整字体大小 */
+            }
+            
+            h2 {
+                font-size: 1.8rem; /* 调整字体大小 */
+            }
+
+            .video-gallery {
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); /* 调整网格列 */
+                gap: 1.5rem; /* 调整间距 */
+            }
+        }
+        
+        /* 移动端样式 (768px及以下) */
+        @media (max-width: 768px) {
+            :root {
+                --nav-height: 60px; /* 调整导航栏高度 */
+            }
+            
+            .navbar {
+                padding: 0 1rem; /* 调整内边距 */
+            }
+            
+            .navbar-logo {
+                font-size: 1.5rem; /* 调整字体大小 */
+            }
+            
+            .navbar-logo img {
+                height: 30px; /* 调整图片高度 */
+                max-height: 30px; /* 调整最大高度 */
+            }
+            
+            /* 隐藏电脑端导航，显示移动菜单按钮 */
+            .navbar-links {
+                display: none; /* 隐藏导航链接 */
+            }
+            
+            .mobile-menu-btn {
+                display: block; /* 显示移动菜单按钮 */
+            }
+            
+            /* 调整标题大小 */
+            h1 { 
+                font-size: 2.2rem; /* 调整字体大小 */
+                text-shadow: 2px 2px 0 rgba(0,0,0,0.2); /* 调整文字阴影 */
+            }
+            
+            h2 { 
+                font-size: 1.6rem; /* 调整字体大小 */
+                margin: 1.5rem 0 1rem; /* 调整外边距 */
+            }
+            
+            h3 {
+                font-size: 1.3rem; /* 调整字体大小 */
+            }
+            
+            /* 调整卡片内边距 */
+            .card {
+                padding: 1.5rem; /* 调整内边距 */
+                margin: 1.5rem 0; /* 调整外边距 */
+            }
+            
+            /* 调整图库布局 */
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* 调整网格列 */
+                gap: 1rem; /* 调整间距 */
+            }
+
+            .video-gallery {
+                grid-template-columns: 1fr; /* 单列布局 */
+                gap: 1.5rem; /* 调整间距 */
+            }
+            
+            /* 下载区域单列布局 */
+            .download-grid {
+                grid-template-columns: 1fr; /* 单列布局 */
+            }
+            
+            /* 移动端图库标题样式调整 */
+            .gallery-caption {
+                transform: none; /* 取消变换 */
+                position: relative; /* 相对定位 */
+                background: none; /* 无背景 */
+                color: var(--text); /* 文字颜色 */
+                padding: 0.5rem 0 0; /* 调整内边距 */
+            }
+            
+            .gallery-item:hover .gallery-caption {
+                transform: none; /* 取消悬停变换 */
+            }
+
+            .video-caption {
+                opacity: 1; /* 完全不透明 */
+            }
+            
+            /* 调整页脚样式 */
+            footer {
+                padding: 2rem 0; /* 调整内边距 */
+                clip-path: polygon(0 5%, 100% 0, 100% 100%, 0 100%); /* 调整裁剪形状 */
+            }
+        }
+        
+        /* 小手机设备优化 (480px及以下) */
+        @media (max-width: 480px) {
+            :root {
+                --nav-height: 50px; /* 调整导航栏高度 */
+            }
+            
+            header {
+                padding: 3rem 0 4rem; /* 调整内边距 */
+                clip-path: polygon(0 0, 100% 0, 100% 95%, 0 100%); /* 调整裁剪形状 */
+            }
+            
+            h1 {
+                font-size: 1.8rem; /* 调整字体大小 */
+            }
+            
+            h2 {
+                font-size: 1.4rem; /* 调整字体大小 */
+            }
+            
+            .card {
+                padding: 1.2rem; /* 调整内边距 */
+            }
+            
+            .btn {
+                padding: 0.7rem 1.5rem; /* 调整内边距 */
+                font-size: 0.8rem; /* 调整字体大小 */
+            }
+            
+            .gallery {
+                grid-template-columns: 1fr; /* 单列布局 */
+            }
+
+            .video-gallery {
+                gap: 1rem; /* 调整间距 */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <!-- 网站logo -->
+        <a href="#" class="navbar-logo">
+            <!-- PNG格式的logo图片 -->
+            <img src="logo.png" alt="云曦阁Logo">
+            云曦阁 <!-- 网站名称，使用篆体显示 -->
+        </a>
+        
+        <!-- 电脑端导航链接 -->
+        <ul class="navbar-links">
+            <li><a href="#home"><i class="fas fa-home"></i> 首页</a></li>
+            <li><a href="#gallery"><i class="fas fa-images"></i> 图片展示</a></li>
+            <li><a href="#videos"><i class="fas fa-video"></i> 视频展示</a></li>
+            <li><a href="#download"><i class="fas fa-download"></i> 客户端下载</a></li>
+            <li><a href="#rules"><i class="fas fa-book"></i> 服务器规则</a></li>
+            <li><a href="#announcement"><i class="fas fa-bullhorn"></i> 公告</a></li>
+        </ul>
+        
+        <!-- 移动端菜单按钮 -->
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i> <!-- 菜单图标 -->
+        </button>
+    </nav>
+    
+    <!-- 移动端导航菜单 -->
+    <div class="mobile-nav" id="mobileNav">
+        <ul class="mobile-nav-links">
+            <li><a href="#home"><i class="fas fa-home"></i> 首页</a></li>
+            <li><a href="#gallery"><i class="fas fa-images"></i> 图片展示</a></li>
+            <li><a href="#videos"><i class="fas fa-video"></i> 视频展示</a></li>
+            <li><a href="#download"><i class="fas fa-download"></i> 客户端下载</a></li>
+            <li><a href="#rules"><i class="fas fa-book"></i> 服务器规则</a></li>
+            <li><a href="#announcement"><i class="fas fa-bullhorn"></i> 公告</a></li>
+        </ul>
+    </div>
+    
+    <!-- 背景粒子效果容器 -->
+    <div id="particles-container"></div>
+    
+    <!-- 头部区域 -->
+    <header id="home">
+        <div class="container">
+            <!-- 主标题，使用篆体字体 -->
+            <h1 class="yunzhuan-font">云曦阁服务器</h1>
+            <p>Minecraft 基岩版 1.21.6 | 附加件生存 | 长期稳定</p>
+        </div>
+    </header>
+    
+    <!-- 主要内容区域 -->
+    <main class="container">
+        <!-- 公告栏部分 -->
+        <section id="announcement" class="card">
+            <h2><i class="fas fa-bullhorn"></i> 最新公告</h2>
+            
+            <!-- 第一个公告 -->
+            <div class="announcement">
+                <h3><i class="fas fa-exclamation-circle"></i> 服务器基础信息通知</h3>
+                <span class="announcement-date">2025年3月15日</span>
+                <p>
+                服务器地址：XiaMoxuan.aternos.me<br>
+                服务器端口：28934<br>
+                游戏版本：Minecraft Bedrock 1.21.6 / Java 1.20.1
+                </p>
+            </div>
+            
+            <!-- 第二个公告 -->
+            <div class="announcement">
+                <h3><i class="fas fa-trophy"></i> 建筑大赛开始报名</h3>
+                <span class="announcement-date">2025年3月28日</span>
+                <p>第一届云曦阁服务器建筑大赛正式开始报名！主题为"未来城市"，比赛时间为3月30日-5月1日，获胜者将赢得一组钻石块和一组绿宝石！快来参与赢得大奖吧(*^-^)ﾉ🎉</p>
+                <!-- 报名按钮 -->
+                <a href="mailto:moxuan_xia20091108@outlook.com?subject=建筑大赛报名申请&body=我想报名参加建筑大赛，我的游戏ID是：" class="btn btn-green" style="margin-top: 1rem;">
+                    <i class="fas fa-sign-in-alt"></i> 立即报名
+                </a>
+            </div>
+
+            <!-- 第三个公告 -->
+            <div class="announcement">
+                <h3><i class="fas fa-trophy"></i>图片投稿</h3>
+                <span class="announcement-date">2025年3月28日</span>
+                <p>因为服务器是新服务器所以图片比较少，在前期只能先展示一些风景图片，希望大家能踊跃投稿(◦˙▽˙◦)❤️！谢谢大家的支持🌹(*^-^)ﾉ🎉</p>
+                <!-- 投稿按钮 -->
+                <a href="mailto:moxuan_xia20091108@outlook.com?subject=图片投稿&body=这是我的投稿，我的游戏ID是：" class="btn btn-green" style="margin-top: 1rem;">
+                    <i class="fas fa-sign-in-alt"></i> 立即投稿
+                </a>
+            </div>
+        </section>
+        
+        <!-- 图片展示区 -->
+        <section id="gallery" class="card">
+            <h2><i class="fas fa-images"></i> 服务器图片展示</h2>
+            <p>欣赏我们服务器中的精彩建筑和玩家作品（因为不知道该展示些什么，所以前期就先展示一些风景，希望大家多多投稿）</p>
+            
+            <!-- 图片网格布局 -->
+            <div class="gallery">
+                <!-- 图片项首位 -->
+                <div class="gallery-item">
+                    <img src="p.jpg" alt="服务器">
+                    <div class="gallery-caption">服务器大图标</div>
+                </div>
+                <!-- 图片项1 -->
+                <div class="gallery-item">
+                    <img src="1.jpg" alt="光影效果">
+                    <div class="gallery-caption">光影改包版效果展示</div>
+                </div>
+                <!-- 图片项2 -->
+                <div class="gallery-item">
+                    <img src="2.jpg" alt="光影效果">
+                    <div class="gallery-caption">光影改包版效果展示</div>
+                </div>
+                <!-- 图片项3 -->
+                <div class="gallery-item">
+                    <img src="3.jpg" alt="光影效果">
+                    <div class="gallery-caption">光影改包版效果展示</div>
+                </div>
+                <!-- 图片项4 -->
+                <div class="gallery-item">
+                    <img src="4.jpg" alt="光影效果">
+                    <div class="gallery-caption">光影改包版效果展示</div>
+                </div>
+                <!-- 图片项5 -->
+                <div class="gallery-item">
+                    <img src="5.jpg" alt="光影效果">
+                    <div class="gallery-caption">光影改包版效果展示</div>
+                </div>
+                <!-- 图片项6 -->
+                <div class="gallery-item">
+                    <img src="6.jpg" alt="光影效果">
+                    <div class="gallery-caption">光影改包版效果展示</div>
+                </div>
+                <!-- 图片项7 -->
+                <div class="gallery-item">
+                    <img src="7.jpg" alt="光影效果">
+                    <div class="gallery-caption">光影改包版效果展示</div>
+                </div>
+                <!-- 图片项8 -->
+                <div class="gallery-item">
+                    <img src="8.jpg" alt="光影效果">
+                    <div class="gallery-caption">光影改包版效果展示</div>
+                </div>
+                <!-- 图片项9 -->
+                <div class="gallery-item">
+                    <img src="9.jpg" alt="光影效果">
+                    <div class="gallery-caption">光影改包版效果展示</div>
+                </div>
+                <!-- 图片项10 -->
+                <div class="gallery-item">
+                    <img src="10.jpg" alt="光影效果">
+                    <div class="gallery-caption">光影改包版效果展示</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 视频展示区 -->
+        <section id="videos" class="card">
+            <h2><i class="fas fa-video"></i> 服务器视频展示</h2>
+            <p>观看我们服务器的精彩视频内容（欢迎玩家投稿自己的游戏视频）</p>
+            
+            <!-- 视频网格布局 -->
+            <div class="video-gallery">
+                <!-- Bilibili 视频示例 -->
+                <div class="video-container">
+                    <iframe 
+                        src="https://player.bilibili.com/player.html?bvid=BV1sFZaYjE3e" 
+                        scrolling="no" 
+                        border="0" 
+                        frameborder="no" 
+                        framespacing="0" 
+                        allowfullscreen="true">
+                    </iframe>
+                    <div class="video-caption">服务器宣传片</div>
+                </div>
+                
+                <!-- YouTube 视频示例 -->
+                <div class="video-container">
+                    <iframe 
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                    <div class="video-caption">服务器建筑展示暂无内容</div>
+                </div>
+                
+                <!-- 本地视频示例（可选） -->
+                <div class="video-container">
+                    <video controls width="100%">
+                        <source src="server-trailer.mp4" type="video/mp4">
+                        您的浏览器不支持 HTML5 视频
+                    </video>
+                    <div class="video-caption">服务器实机演示暂无内容</div>
+                </div>
+            </div>
+            
+            <!-- 视频投稿按钮 -->
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="mailto:moxuan_xia20091108@outlook.com?subject=视频投稿&body=这是我的视频投稿，我的游戏ID是：" 
+                   class="btn btn-green">
+                    <i class="fas fa-video"></i> 视频投稿
+                </a>
+            </div>
+        </section>
+        
+        <!-- 服务器信息部分 -->
+        <section class="card">
+            <h2><i class="fas fa-server"></i> 服务器信息</h2>
+            <p>欢迎加入云曦阁 Minecraft服务器！我们致力于为玩家提供稳定、公平的游戏环境，打造活跃友好的玩家社区。</p>
+            
+            <h3>快速加入服务器</h3>
+            <p>点击下方按钮一键添加服务器到您的Minecraft客户端：</p>
+            <a href="https://add.aternos.org/XiaMoxuan" class="btn btn-green" id="quick-join">
+                <i class="fas fa-plug"></i> 一键添加服务器
+            </a>
+            
+            <div class="alert">
+                <p><strong>版本提示：</strong>请确保您的客户端版本为基岩版1.21.6或Java版1.20.1，否则可能无法连接服务器。</p>
+            </div>
+        </section>
+        
+        <!-- 客户端下载部分 -->
+        <section id="download" class="card">
+            <h2><i class="fas fa-download"></i> 客户端下载</h2>
+            <p>获取适用于您设备的Minecraft客户端：</p>
+            
+            <!-- 下载网格布局 -->
+            <div class="download-grid">
+                <!-- Windows 下载卡片 -->
+                <div class="download-card">
+                    <h3><i class="fab fa-windows"></i> Windows 平台</h3>
+                    <p>适用于Windows 10/11的官方基岩版客户端</p>
+                    <a href="https://www.123912.com/s/risojv-yHm6H" 
+                       class="btn" 
+                       target="_blank" 
+                       rel="noopener noreferrer">
+                        <i class="fas fa-download"></i> 下载Windows版
+                    </a>
+                    
+                    <h4>系统要求</h4>
+                    <ul>
+                        <li>操作系统: Windows 10 14393.0或更高</li>
+                        <li>架构: x64, x86 或 ARM64</li>
+                        <li>内存: 1GB RAM</li>
+                        <li>显卡: DirectX 11兼容</li>
+                        <li>存储: 1GB可用空间</li>
+                    </ul>
+                </div>
+                
+                <!-- Android 下载卡片 -->
+                <div class="download-card">
+                    <h3><i class="fab fa-android"></i> Android 平台</h3>
+                    
+                    <h4>原版安装包</h4>
+                    <p>官方原版Minecraft基岩版APK</p>
+                    <a href="https://www.123912.com/s/risojv-yyo6H" 
+                       class="btn" 
+                       target="_blank" 
+                       rel="noopener noreferrer">
+                        <i class="fas fa-download"></i> 下载原版APK
+                    </a>
+                    
+                    <h4>光影改包版</h4>
+                    <div class="alert" style="margin: 1rem 0; background: rgba(77,157,224,0.1);">
+                        <p style="color: var(--cloud-blue); font-weight:500;">建议与光影包搭配使用 ↓</p>
+                    </div>
+                    <a href="https://www.123912.com/s/risojv-qHm6H" 
+                       class="btn btn-green" 
+                       target="_blank" 
+                       rel="noopener noreferrer">
+                        <i class="fas fa-download"></i> 下载光影改包版
+                    </a>
+                    
+                    <!-- 光影包下载部分 -->
+                    <div style="margin-top: 1.5rem; border-top: 2px dashed rgba(0,0,0,0.1); padding-top: 1rem;">
+                        <h4><i class="fas fa-cube"></i> 配套光影包</h4>
+                        <p> 光影增强包 (Android专用)</p>
+                        <a href="https://www.123912.com/s/risojv-6Hm6H" 
+                           class="btn btn-green"
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           style="background: linear-gradient(135deg, var(--cloud-blue), var(--cloud-dark));">
+                            <i class="fas fa-magic"></i> 下载光影资源包
+                        </a>
+                        
+                        <div class="alert" style="margin-top: 1rem;">
+                            <p><strong>使用方法：</strong></p>
+                            <ol>
+                                <li>下载后双击自动导入游戏</li>
+                                <li>在"全局资源"中激活光影包</li>
+                                <li>需配合光影改包版客户端使用</li>
+                                <li>建议设备配置：骁龙865/天玑1200及以上</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 基岩版存档下载卡片 -->
+                <div class="download-card">
+                    <h3><i class="fas fa-archive"></i> 服务器存档【Bedrock Edition｜2025年3月24日】</h3>
+                    <p>下载基岩版3月最新服务器世界存档</p>
+                    <a href="https://www.123912.com/s/risojv-VHm6H" 
+                       class="btn btn-green" 
+                       target="_blank" 
+                       rel="noopener noreferrer">
+                        <i class="fas fa-download"></i> 下载世界存档
+                    </a>
+                    <div class="alert" style="margin-top: 1rem;">
+                        <p><strong>存档说明：</strong></p>
+                        <ul>
+                            <li>包含截至2025年3月的完整世界数据</li>
+                            <li>版本要求：基岩版1.21.6+</li>
+                            <li>导入方法：双击文件自动导入</li>
+                            <li>文件大小：约1.2GB（含附加内容）</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Java版存档下载卡片 -->
+                <div class="download-card">
+                    <h3><i class="fas fa-archive"></i> 服务器存档【Java｜1.20.1｜2025年2月6日】</h3>
+                    <p>下载Java版2月最新服务器世界存档</p>
+                    <a href="https://www.123912.com/s/risojv-jHm6H" 
+                       class="btn btn-green" 
+                       target="_blank" 
+                       rel="noopener noreferrer">
+                        <i class="fas fa-download"></i> 下载世界存档
+                    </a>
+                    <div class="alert" style="margin-top: 1rem;">
+                        <p><strong>存档说明：</strong></p>
+                        <ul>
+                            <li>包含截至2025年2月的完整世界数据</li>
+                            <li>版本要求：Java版1.20.1+</li>
+                            <li>导入方法：解压后放入saves文件夹</li>
+                            <li>文件大小：约1.5GB（含附加内容）</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 服务器规则部分 -->
+        <section id="rules" class="card">
+            <h2><i class="fas fa-book"></i> 服务器规则</h2>
+            <div class="download-grid">
+                <!-- 玩家守则卡片 -->
+                <div class="download-card">
+                    <h3><i class="fas fa-users"></i> 玩家守则</h3>
+                    <ul>
+                        <li>禁止使用任何作弊工具或漏洞</li>
+                        <li>尊重其他玩家，禁止骚扰行为</li>
+                        <li>禁止建造不当内容或使用不当皮肤</li>
+                        <li>禁止恶意破坏他人建筑</li>
+                        <li>禁止在公共频道刷屏</li>
+                    </ul>
+                </div>
+                <!-- 管理规则卡片 -->
+                <div class="download-card">
+                    <h3><i class="fas fa-user-shield"></i> 管理规则</h3>
+                    <ul>
+                        <li>大型红石机械需提前报备</li>
+                        <li>管理员有权处理违规行为</li>
+                        <li>争议问题请联系管理员</li>
+                        <li>举报违规行为请提供证据</li>
+                        <li>管理团队接受玩家监督</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- 页脚部分 -->
+    <footer>
+        <div class="container">
+            <!-- 社交媒体链接 -->
+            <div class="social-links">
+                <!-- QQ群链接 -->
+                <a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=mtm2bU_QXid2B7a8GZne7nCbo02LoowJ&authKey=drRGl7ESf1iBUGQfsP17BxIALsxYMuEeC1dRcJAKlp0JHpr65U" target="_blank" aria-label="QQ群"><i class="fab fa-qq"></i></a>
+                <!-- Discord链接 -->
+                <a href="https://discord.gg/WArWzFWPCE" target="_blank" aria-label="Discord"><i class="fab fa-discord"></i></a>
+                <!-- Bilibili链接 -->
+                <a href="https://b23.tv/1RfEkIB" target="_blank" aria-label="Bilibili"><i class="fab fa-bilibili"></i></a>
+                <!-- YouTube链接 -->
+                <a href="https://www.youtube.com/@XiaMoxuan" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            </div>
+            
+            <!-- 页脚导航链接 -->
+            <div class="footer-links">
+                <li><a href="#home">首页</a></li>
+                <li><a href="#gallery">图片展示</a></li>
+                <li><a href="#videos">视频展示</a></li>
+                <li><a href="#download">客户端下载</a></li>
+                <li><a href="#rules">服务器规则</a></li>
+                <li><a href="#announcement">公告</a></li>
+            </div>
+            
+            <!-- 版权信息 -->
+            <p>© 2023 云曦阁 Minecraft Server | 非官方社区服务器</p>
+            <p>Minecraft是Mojang Studios的注册商标，本网站与其无官方关联</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript代码 -->
+    <script>
+        // 创建Minecraft风格粒子效果
+        function createParticles() {
+            const container = document.getElementById('particles-container');
+            const particleTypes = [
+                'grass', 'dirt', 'stone', 'planks', 'brick', 'diamond'
+            ];
+            
+            // 创建25个粒子
+            for (let i = 0; i < 25; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // 随机属性
+                const size = Math.random() * 24 + 16;
+                const posX = Math.random() * window.innerWidth;
+                const posY = Math.random() * window.innerHeight;
+                const duration = Math.random() * 20 + 10;
+                const delay = Math.random() * 5;
+                const rotation = Math.random() * 360;
+                const type = particleTypes[Math.floor(Math.random() * particleTypes.length)];
+                
+                // 设置粒子样式
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${posX}px`;
+                particle.style.top = `${posY}px`;
+                particle.style.backgroundImage = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><rect width="16" height="16" fill="${getBlockColor(type)}"/></svg>')`;
+                particle.style.animation = `float ${duration}s ease-in-out ${delay}s infinite`;
+                particle.style.transform = `rotate(${rotation}deg)`;
+                
+                container.appendChild(particle);
+            }
+            
+            // 根据方块类型获取颜色
+            function getBlockColor(type) {
+                const colors = {
+                    'grass': '%234CAF50',
+                    'dirt': '%23795548',
+                    'stone': '%23808080',
+                    'planks': '%23C19C6C',
+                    'brick': '%23B87333',
+                    'diamond': '%234BCFEC'
+                };
+                return colors[type] || '%234CAF50';
+            }
+        }
+        
+        // 移动端菜单切换功能
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileNav = document.getElementById('mobileNav');
+        
+        // 点击菜单按钮切换菜单显示状态
+        mobileMenuBtn.addEventListener('click', function() {
+            mobileNav.classList.toggle('active');
+            // 切换图标
+            this.innerHTML = mobileNav.classList.contains('active') ? 
+                '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+        });
+        
+        // 点击移动菜单项后关闭菜单
+        document.querySelectorAll('.mobile-nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileNav.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            });
+        });
+        
+        // 平滑滚动功能
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    const navbarHeight = document.querySelector('.navbar').offsetHeight;
+                    const targetPosition = targetElement.offsetTop - navbarHeight;
+                    
+                    // 平滑滚动到目标位置
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // 导航栏滚动效果 - 滚动时改变样式
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(34, 49, 63, 0.95)';
+                navbar.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
+            } else {
+                navbar.style.background = 'rgba(44, 62, 80, 0.9)';
+                navbar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+            }
+        });
+        
+        // 页面加载完成后初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            // 创建背景粒子
+            createParticles();
+            
+            // 激活当前导航项
+            const currentSection = window.location.hash || '#home';
+            document.querySelector(`.navbar-links a[href="${currentSection}"]`)?.classList.add('active');
+        });
+        
+        // 窗口大小改变时调整粒子位置
+        window.addEventListener('resize', () => {
+            const particles = document.querySelectorAll('.particle');
+            particles.forEach(particle => {
+                particle.style.left = `${Math.random() * window.innerWidth}px`;
+                particle.style.top = `${Math.random() * window.innerHeight}px`;
+            });
+        });
+    </script>
+</body>
+</html>
